@@ -1,21 +1,57 @@
-train_data = read.csv("data/train.csv")
-test_data = read.csv("data/test.csv")
-files = c("/TCHOL_F.XPT", "/SMQ_F.XPT", "/DR1TOT_F.XPT", "/DEMO_F.XPT", "/BPX_F.XPT", "/BMX_F.XPT")
-files_11 = c("/TCHOL_G.XPT", "/SMQ_G.XPT", "/DR1TOT_G.XPT", "/DEMO_G.XPT", "/BPX_G.XPT", "/BMX_G.XPT")
+# In order to use this, use setwd({final_project_directory})
+# getwd() gets your current working directory if you're unsure where you are at
 
-for(i in seq(0, 4)){
-  year = 2 * i + 2009
+# Data of all years has these names
+files = c("/TCHOL.XPT", "/SMQ.XPT", "/DR1TOT.XPT", "/DEMO.XPT", "/BPX.XPT", "/BMX.XPT")
+
+library(haven)
+
+years_data = list()
+
+# Iterate through all years
+for(i in seq(1, 5)){
+  
+  # Set year
+  year = 2 * i + 2007
+  # Set string of directory, make sure to setwd to your final project directory
   dir = paste("data/", year, sep="")
-  if (2 * i + 2009 ==2011){
-    yearfiles = files_11
+  year_data = data.frame()
+  
+  # Iterate through all files and left join
+  for(j in seq(1,6)){
+    
+    d = paste(dir, files[j], sep="")
+    val = read_xpt(d)
+    
+    if(j == 1){
+      year_data = val
+    }
+    else{
+      year_data = merge(year_data, val, all.x = TRUE, by = "SEQN")
+    }
+    
+  }
+  
+  if(i == 1){
+    years_data = year_data
   }
   else{
-    yearfiles = files
+   years_data = bind_rows(years_data, year_data) 
   }
-  for(j in seq(1,6)){
-    d = paste(dir, yearfiles[j], sep="")
-    new_df = read_xpt(d)
-   # train_data = merge(train_data, new_df, by.x(S))
-  }
+  
 }
+
+# Remove any column where there is an NA
+years_data = years_data[, colSums(is.na(years_data)) == 0]
+
+# Set train and test data
+train_data = read.csv("data/train.csv")
+test_data = read.csv("data/test.csv")
+train_data = merge(train_data, years_data, all.x = TRUE, by="SEQN")
+test_data = merge(test_data, years_data, all.x = TRUE, by="SEQN")
+
+
+# Clean workspace
+rm(c("year_data", "years_data", "val", "d", "dir", "i", "j", "year"))
+
 
