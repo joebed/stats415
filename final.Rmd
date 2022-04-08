@@ -55,8 +55,12 @@ pairs(~ BPXSY1 + BPXSY2 + BPXSY3 + BPXDI1 + BPXDI2 + BPXDI3, data = train_data)
 ## hist of ldl cholesterol
 hist(train_data$LBXTC)
 
+## hist of total cholesterol
+hist(train_data$LBDTCSI)
 
  
+
+
 ```
 
 
