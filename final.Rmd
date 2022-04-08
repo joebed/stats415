@@ -13,6 +13,9 @@ questions to answer
 Is there a way to classify if someone smokes based on body measure, blood pressure, and cholesterol? Do certain demographics increase the percentage of smokers?
 Is there a way to predict blood pressure levels based on body measures and cholesterol? Does smoking status or certain demographics impact blood pressure as well?
 
+Do not use these variables:
+dr1exmer interviewer id code
+
 
 # Exploratory Data Analysis
 
@@ -48,7 +51,12 @@ pairs(~ BPXSY1 + BPXSY2 + BPXSY3 + BPXDI1 + BPXDI2 + BPXDI3, data = train_data)
 ```
 
 ```{r}
-hist(train_data$DR1TCHL)
+
+## hist of ldl cholesterol
+hist(train_data$LBXTC)
+
+
+ 
 ```
 
 
