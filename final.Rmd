@@ -9,5 +9,50 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+questions to answer
+Is there a way to classify if someone smokes based on body measure, blood pressure, and cholesterol? Do certain demographics increase the percentage of smokers?
+Is there a way to predict blood pressure levels based on body measures and cholesterol? Does smoking status or certain demographics impact blood pressure as well?
+
+
+# Exploratory Data Analysis
+
+```{r}
+
+## first diastolic reading
+hist(train_data$BPXDI1)
+ 
+## second diastolic reading
+hist(train_data$BPXDI2)
+
+
+## third diastolic reading
+hist(train_data$BPXDI3)
+
+
+
+## first systolic reading
+hist(train_data$BPXSY1)
+
+
+## second systolic reading
+hist(train_data$BPXSY2)
+
+
+## third systolic reading
+hist(train_data$BPXSY3)
+
+
+pairs(~ BPXSY1 + BPXSY2 + BPXSY3 + BPXDI1 + BPXDI2 + BPXDI3, data = train_data)     
+## systolic blood pressures more precise than diastolic blood pressures (more correlated)
+
+```
+
+```{r}
+hist(train_data$DR1TCHL)
+```
+
+
+
+
 ##  YEaaaaaaooooooo
 
