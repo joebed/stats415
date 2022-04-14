@@ -23,8 +23,8 @@ boost_mod <- gbm(
   interaction.depth=4)
 
 df = summary(boost_mod)
-boost_coefs = df$rel.inf > 0
+boost.coefs = df$rel.inf > 0.07
 
-boost_coefs = df[boost_coefs,"var"]
+boost.coefs = df[boost.coefs,"var"]
 
-rm(c("num_trees", "df"))
+rm(list = c("num_trees", "df"))
