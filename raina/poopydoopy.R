@@ -52,7 +52,7 @@ test_pred <- predict(fit, test_data)
 MSE(test_data$LBXTC, test_pred)
 
 ## Also, the plots indicate the relationship 
-## may not be well-expressed by a polynomial either.
+## may not be well-expressed by a polynomial either. - MSE is still very large.
 
 ## Can we use a larger set of dietary variables to predict
 ## cholesterol levels?
