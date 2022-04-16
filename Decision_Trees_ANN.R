@@ -3,6 +3,7 @@
 
 ## Decision Tree with Random Forests
 
+
 summary(train_data$LBXTC)
 train_data$highchol = as.factor(ifelse(train_data$LBXTC >= 239, "Yes", "No"))
 train_data$borderlinechol = as.factor(ifelse(train_data$LBXTC >= 200, "Yes", "No"))
