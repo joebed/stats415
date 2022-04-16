@@ -13,7 +13,7 @@ library(gbm)
 set.seed(68)
 num_trees = 1000
 
-boost_mod <- gbm(
+boost.mod <- gbm(
   y~.,
   data=train_data,
   distribution="gaussian",
@@ -22,9 +22,5 @@ boost_mod <- gbm(
   cv.folds = 5,
   interaction.depth=4)
 
-df = summary(boost_mod)
-boost.coefs = df$rel.inf > 0.07
-
-boost.coefs = df[boost.coefs,"var"]
-
-rm(list = c("num_trees", "df"))
+boost.df = summary(boost.mod)
+rm(list = c("num_trees"))
