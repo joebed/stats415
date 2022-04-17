@@ -1,9 +1,11 @@
 # Neural Net
 library(keras)
 
-
-boost.coefs = boost.df$rel.inf > .4
+boost.coefs = boost.df$rel.inf > .5
 boost.coefs = boost.df[boost.coefs,"var"]
+
+bart.coefs = bart_coefs$score > 5
+bart.coefs = bart_coefs[bart.coefs, "var"]
 
 # Use matrices for neural net, run Lasso.R first to get lasso coefficients
 set.seed(997)
@@ -20,19 +22,22 @@ yTe = test_df$y
 xFull = model.matrix(~ . - y, full_set_boost_coefs)
 yFull = full_set_boost_coefs$y
 
-callbacks_list = list(callback_reduce_lr_on_plateau(monitor = "val_loss"))
+callbacks_list = list(callback_reduce_lr_on_plateau(monitor = "val_loss", patience = 10, min_lr = .000001))
 
 set.seed(1587)
 ## create neural network
 modnn <- keras_model_sequential () %>%
   
-  layer_dense(units = 1000, activation = "relu", kernel_regularizer = regularizer_l2(.1)) %>%
+  layer_dense(units = 100, activation = "relu") %>%
+  layer_batch_normalization() %>%
+  layer_dropout(rate = .05, trainable = TRUE) %>%
+
+  layer_dense(units = 100, activation = "relu") %>%
   layer_batch_normalization() %>%
   layer_dropout(rate = .05, trainable = TRUE) %>%
   
-  layer_dense(units = 1000, activation = "relu", kernel_regularizer = regularizer_l2(.1)) %>%
+  layer_dense(units = 100, activation = "relu", kernel_regularizer = regularizer_l2(.05)) %>%
   layer_batch_normalization() %>%
-  layer_dropout(rate = .05, trainable = TRUE) %>%
   
   layer_dense(units = 1)
 
@@ -41,15 +46,12 @@ modnn %>% compile(loss = "mse",
 
 start_time <- Sys.time()
 history <- modnn %>% fit(
-  xTr, yTr, epochs = 100, batch_size = 32,
-  validation_data = list(xTe, yTe),
-  callbacks = callbacks_list
+  xFull, yFull, epochs = 500, batch_size = 64,
+  #validation_data = list(xTe, yTe),
+  callbacks = callbacks_list,
+  validation_split = .2
 )
 end_time <- Sys.time()
 end_time - start_time
 
-npred <- c(predict(modnn , xTe))
-(plain_net <- cor(npred, yTe)^2) # test r^2
-cor(c(predict(modnn, xTr)), yTr)^2 # train r^2
-
-rm(list=c("coefs","end_time", "start_time","npred"))
+rm(list=c("coefs","end_time", "start_time"))
