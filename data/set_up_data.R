@@ -62,8 +62,8 @@ train_data = train_data[, !(names(train_data) %in% drops)]
 test_data = test_data[, !(names(test_data) %in% drops)]
 
 # Standardize data
-train_data[seq(3, 144)] = scale(train_data[seq(3, 144)])
-test_data[seq(2, 144)] = scale(test_data[seq(2, 144)])
+#train_data[seq(3, 144)] = scale(train_data[seq(3, 144)])
+#test_data[seq(2, 144)] = scale(test_data[seq(2, 144)])
 
 # Clean data
 rm(list = c("d", "dir", "files", "i", "j", "year", "year_data", "years_data", "drops", "val"))
