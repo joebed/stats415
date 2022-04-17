@@ -52,20 +52,24 @@ test_pred <- predict(fit, test_data)
 MSE(test_data$LBXTC, test_pred)
 
 ## Also, the plots indicate the relationship 
-## may not be well-expressed by a polynomial either.
+## may not be well-expressed by a polynomial either. - MSE is still very large.
 
 ## Can we use a larger set of dietary variables to predict
 ## cholesterol levels?
 
 diet_train <- subset(train_data, select = -c(SEQN, SMAQUEX2, 
-                                             LBDTCSI, WTDRD1, WTDR2D, DR1EXMER, DRDINT, DR1DBIH, 
-                                             DR1LANG, DR1TNUMF, DR1DAY, DBQ095Z, DRQSPREP, DRQSDIET, 
-                                             DR1_300, DR1TWS, SDDSRVYR, RIDEXMON, RIAGENDR, RIDAGEYR, 
-                                             RIDRETH1, DMDCITZN, DMDHHSIZ, DMDFMSIZ, INDHHIN2, 
-                                             INDFMIN2, INDFMPIR, DMDHRGND, DMDHRAGE, DMDHREDU, 
-                                             DMDHRMAR, SIALANG, SIAPROXY, SIAINTRP, FIALANG, 
-                                             MIALANG, FIAPROXY, MIAPROXY, FIAINTRP, MIAINTRP, 
-                                             WTINT2YR, WTMEC2YR, SDMVPSU, DR1BWATZ, 1))
+  LBDTCSI, WTDRD1, WTDR2D, DR1EXMER, DRDINT, DR1DBIH, 
+  DR1LANG, DR1TNUMF, DR1DAY, DBQ095Z, DRQSPREP, DRQSDIET, 
+  DR1_300, DR1TWS, SDDSRVYR, RIDEXMON, RIAGENDR, RIDAGEYR, 
+  RIDRETH1, DMDCITZN, DMDHHSIZ, DMDFMSIZ, INDHHIN2, 
+  INDFMIN2, INDFMPIR, DMDHRGND, DMDHRAGE, DMDHREDU, 
+  DMDHRMAR, SIALANG, SIAPROXY, SIAINTRP, FIALANG, 
+  MIALANG, FIAPROXY, MIAPROXY, FIAINTRP, MIAINTRP, 
+  WTINT2YR, WTMEC2YR, SDMVPSU, DR1BWATZ, 1, SDMVSTRA, 
+  BPAARM, BPACSZ, BPXPLS, BPXPULS, BPXPTY, BPXML1, BPXSY1,
+  BPXDI1, BPXAEN1, BPXSY2, BPXDI2, BPAEN2, BPXSY3, BPXDI3, 
+  BPAEN3, BMDSTATS, BMXWT, BMXHT, BMXBMI, BMXLEG, BMXARML, 
+  BMXARMC, BMXWAIST, RIDRETH3, DMDBORN4, DMDHHSZA, DMDHHSZB))
 
 diet_test <- subset(test_data, select = names(diet_train))
 

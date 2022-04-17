@@ -11,10 +11,13 @@ if (nchar(wd) > 0){
   getwd()
 }
 
-train_data = read.csv("train_data.csv")
-test_data = read.csv("test_data.csv")
+train_data = read.csv("./data/train_data.csv")
+test_data = read.csv("./data/test_data.csv")
+boost.df = read.csv("./data/boostdf.csv")
+bart_coefs = read.csv("./data/bart_coef.csv")
 
 train_data = train_data[,seq(2, 145)]
 test_data = test_data[,seq(2, 145)]
 
 rm(wd)
+
