@@ -61,7 +61,7 @@ drops = c("SMDUPCA", "SMD100BR", "DR1DRSTZ", "DRABF", "RIDSTATR")
 train_data = train_data[, !(names(train_data) %in% drops)]
 test_data = test_data[, !(names(test_data) %in% drops)]
 
-# Standardize data
+# Standardize data, comment this out to run the code in Classification folder
 #train_data[seq(3, 144)] = scale(train_data[seq(3, 144)])
 #test_data[seq(2, 144)] = scale(test_data[seq(2, 144)])
 
