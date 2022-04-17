@@ -10,17 +10,10 @@ bart.coefs = bart_coefs[bart.coefs, "var"]
 # Use matrices for neural net, run Lasso.R first to get lasso coefficients
 set.seed(997)
 coefs = boost.coefs
-train = sample(8921, 8921 * .8)
-train_df = train_data[train,c("y", coefs)]
-test_df = train_data[-train,c("y", coefs)]
-full_set_boost_coefs = train_data[,c("y", coefs)]
 
-xTr = model.matrix( ~ . - y, train_df)
-yTr = train_df$y
-xTe = model.matrix( ~ . - y, test_df)
-yTe = test_df$y
-xFull = model.matrix(~ . - y, full_set_boost_coefs)
-yFull = full_set_boost_coefs$y
+training.df = train_data[,c("y", coefs)]
+xFull = model.matrix(~ . - y, training.df)
+yFull = training.df$y
 
 callbacks_list = list(callback_reduce_lr_on_plateau(monitor = "val_loss", patience = 10, min_lr = .000001))
 
@@ -47,11 +40,11 @@ modnn %>% compile(loss = "mse",
 start_time <- Sys.time()
 history <- modnn %>% fit(
   xFull, yFull, epochs = 500, batch_size = 64,
-  #validation_data = list(xTe, yTe),
   callbacks = callbacks_list,
   validation_split = .2
 )
 end_time <- Sys.time()
 end_time - start_time
 
-rm(list=c("coefs","end_time", "start_time"))
+# Good if test error is around 5, want to try to get consistently below 5 but that is very hard
+rm(list=c("boost.coefs","bart.coefs","end_time", "start_time"))
