@@ -9,12 +9,17 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-questions to answer
-Is there a way to classify if someone smokes based on body measure, blood pressure, and cholesterol? Do certain demographics increase the percentage of smokers?
-Is there a way to predict blood pressure levels based on body measures and cholesterol? Does smoking status or certain demographics impact blood pressure as well?
+Kaggle name: 
 
-Do not use these variables:
-dr1exmer interviewer id code
+In this report, we hope to answer:
+
+1. Can we predict total cholesterol levels (LBXTC) based on dietary cholesterol intake (DR1TCHOL), and are there other nutrients that can predict it better?
+
+We used linear regression, polynomial regression, and lasso regression to explore this question.
+
+2. Can we accurately classify subjects with high cholesterol based on their intake of various nutrients?
+
+We used a neural network to explore this question. 
 
 
 # Exploratory Data Analysis
