@@ -131,10 +131,3 @@ nn_pred = predict(mod_nn, test_data)
 nn_pred = ifelse(nn_pred > .5, "Yes", "No")
 table(nn_pred, test_data$highchol)
 
-
-grid <- expand.grid(.size = c(1, 2, 3, 4, 5, 6, 7),
-                    .decay = c(1e-5, 1e-4, 1e-3, 1e-2))
-mod_nn_tune <- train(highchol~., data = train_data, method = "nnet", preProcess = c("center","scale"),
-                     tuneGrid = grid)
-mod_nn_tune
-
