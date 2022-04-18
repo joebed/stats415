@@ -6,10 +6,6 @@ MSE <- function(y1, y2){
   mean((y1-y2)^2)
 }
 
-train_data <- read.csv("./train_data.csv")
-train_data <- subset(train_data, select = -c(y))
-test_data <- read.csv("./test_data.csv")
-test_data <- subset(test_data, select = names(train_data))
 
 head(train_data)
 
@@ -18,11 +14,15 @@ head(train_data)
 
 lm.fit <- lm(LBXTC ~ DR1TCHOL, train_data)
 summary(lm.fit)
-#plot(lm.fit)
+plot(lm.fit)
+
+
 
 dim(train_data)
 
 dim(test_data)
+
+summary(train_data$LBXTC)
 
 train_pred <- predict(lm.fit, train_data)
 MSE(train_data$LBXTC, train_pred)
@@ -57,7 +57,7 @@ MSE(test_data$LBXTC, test_pred)
 ## Can we use a larger set of dietary variables to predict
 ## cholesterol levels?
 
-diet_train <- subset(train_data, select = -c(SEQN, SMAQUEX2, 
+diet_train <- subset(train_data, select = -c(y, SEQN, SMAQUEX2, 
   LBDTCSI, WTDRD1, WTDR2D, DR1EXMER, DRDINT, DR1DBIH, 
   DR1LANG, DR1TNUMF, DR1DAY, DBQ095Z, DRQSPREP, DRQSDIET, 
   DR1_300, DR1TWS, SDDSRVYR, RIDEXMON, RIAGENDR, RIDAGEYR, 
@@ -67,11 +67,26 @@ diet_train <- subset(train_data, select = -c(SEQN, SMAQUEX2,
   MIALANG, FIAPROXY, MIAPROXY, FIAINTRP, MIAINTRP, 
   WTINT2YR, WTMEC2YR, SDMVPSU, DR1BWATZ, 1, SDMVSTRA, 
   BPAARM, BPACSZ, BPXPLS, BPXPULS, BPXPTY, BPXML1, BPXSY1,
-  BPXDI1, BPXAEN1, BPXSY2, BPXDI2, BPAEN2, BPXSY3, BPXDI3, 
+  BPXDI1, BPAEN1, BPXSY2, BPXDI2, BPAEN2, BPXSY3, BPXDI3, 
   BPAEN3, BMDSTATS, BMXWT, BMXHT, BMXBMI, BMXLEG, BMXARML, 
-  BMXARMC, BMXWAIST, RIDRETH3, DMDBORN4, DMDHHSZA, DMDHHSZB))
+  BMXARMC, BMXWAIST, RIDRETH3, DMDBORN4, DMDHHSZA, 
+  DRD340, DRD360, DMDHHSZE, DMDHHSZB))
 
-diet_test <- subset(test_data, select = names(diet_train))
+diet_test <- subset(test_data, select = -c(SEQN, SMAQUEX2, 
+  LBDTCSI, WTDRD1, WTDR2D, DR1EXMER, DRDINT, DR1DBIH, 
+  DR1LANG, DR1TNUMF, DR1DAY, DBQ095Z, DRQSPREP, DRQSDIET, 
+   DR1_300, DR1TWS, SDDSRVYR, RIDEXMON, RIAGENDR, RIDAGEYR, 
+  RIDRETH1, DMDCITZN, DMDHHSIZ, DMDFMSIZ, INDHHIN2, 
+  INDFMIN2, INDFMPIR, DMDHRGND, DMDHRAGE, DMDHREDU, 
+  DMDHRMAR, SIALANG, SIAPROXY, SIAINTRP, FIALANG, 
+  MIALANG, FIAPROXY, MIAPROXY, FIAINTRP, MIAINTRP, 
+  WTINT2YR, WTMEC2YR, SDMVPSU, DR1BWATZ, 1, SDMVSTRA, 
+  BPAARM, BPACSZ, BPXPLS, BPXPULS, BPXPTY, BPXML1, BPXSY1,
+  BPXDI1, BPAEN1, BPXSY2, BPXDI2, BPAEN2, BPXSY3, BPXDI3, 
+  BPAEN3, BMDSTATS, BMXWT, BMXHT, BMXBMI, BMXLEG, BMXARML, 
+  BMXARMC, DMDHRBR4, BMXWAIST, RIDRETH3, DMDBORN4, 
+  DRD340, DRD360, DMDHHSZE,DMDHHSZA, DMDHHSZB))
+
 
 names(diet_train)
 
@@ -112,8 +127,6 @@ err_train
 
 err_test <- mean((test_data$LBXTC - lasso_test)^2)
 err_test
-
-
 
 
 
