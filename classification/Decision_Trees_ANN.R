@@ -101,10 +101,10 @@ par(mfrow = c(1,2))
 plot(range, train_err, type = "b")
 plot(range, test_err, type = "b")
 
-mod_adaboost_optimal = gbm(highchol~., data = train_data_b, distribution="adaboost", n.trees= 950)
+mod_adaboost_optimal = gbm(highchol~., data = train_data_b, distribution="adaboost", n.trees= 1900)
 summary(mod_adaboost_optimal)
 
-test_pred_adaboost = predict(mod_adaboost_optimal, test_data_b, n.trees = 950, type='response')
+test_pred_adaboost = predict(mod_adaboost_optimal, test_data_b, n.trees = 1900, type='response')
 test_pred_adaboost = ifelse(test_pred_adaboost > 0.5, 1, 0)
 table(test_pred_adaboost, test_data_b$highchol)
 test_err_adaboost = mean(test_data_b$highchol != test_pred_adaboost)
