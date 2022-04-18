@@ -52,8 +52,8 @@ mod_rf
 varImpPlot(mod_rf) # looks like age (RIDAGEYR) is highly affecting results, so let's try to run another model without age as a predictor
 
 rf_pred = predict(mod_rf, test_data)
-test_err = mean(test_data$highchol != rf_pred)
-test_err
+test_err_rf = mean(test_data$highchol != rf_pred)
+test_err_rf
 
 # Removing age as a predictor variable
 train_data_a = train_data
@@ -61,12 +61,16 @@ test_data_a = test_data
 train_data_a$RIDAGEYR = NULL
 test_data_a$RIDAGEYR = NULL
 
+# running the second random forest model
 mod_rf_2 = randomForest(highchol~., data = train_data_a, mtry = m, ntree = 1000, importance = T)
 
+# looking at the most important variables from the second rf model
 varImpPlot(mod_rf_2)
 
+# predictions and test errors using random forests
 rf_2_pred = predict(mod_rf_2, test_data_a)
-table(rf_2_pred, test_data_a$highchol)
+test_err_rf_2 = mean(test_data_a$highchol != rf_2_pred)
+test_err_rf_2
 
 
 ## Decision Tree with Boosting
@@ -76,7 +80,7 @@ train_data_b$highchol = ifelse(train_data_b$highchol == "Yes", 1, 0)
 test_data_b = test_data_a
 test_data_b$highchol = ifelse(test_data_b$highchol == "Yes", 1, 0)
 
-
+# running a sequence of boosted decision trees
 range = seq(500, 2000, by = 100)
 test_err = c()
 train_err = c()
@@ -97,13 +101,16 @@ for(i in range) {
   test_err = c(test_err, test_err_i)
 }
 
+# plotting the train and test errors of the previous sequence
 par(mfrow = c(1,2))
 plot(range, train_err, type = "b")
 plot(range, test_err, type = "b")
 
+# running the optimal boosted decision tree
 mod_adaboost_optimal = gbm(highchol~., data = train_data_b, distribution="adaboost", n.trees= 1900)
 summary(mod_adaboost_optimal)
 
+# predictions and test errors using the optimal boosted decision tree
 test_pred_adaboost = predict(mod_adaboost_optimal, test_data_b, n.trees = 1900, type='response')
 test_pred_adaboost = ifelse(test_pred_adaboost > 0.5, 1, 0)
 table(test_pred_adaboost, test_data_b$highchol)
@@ -115,19 +122,34 @@ install.packages("nnet")
 library(nnet)
 library(caret)
 
-range_nn = range = seq(1, 7, by = 1)
-test_err_nn = c()
-for (i in range_nn) {
-  mod_nn_i = nnet(highchol~ _______, data = train_data_a, size=i, decay=5e-4, maxit=100)
-  nn_pred_i = predict(mod_nn_i, test_data_a)
-  nn_pred_i = ifelse(nn_pred_i > .5, "Yes", "No")
-  test_err_nn_i = mean(test_data_a$highchol != nn_pred_i)
-  test_err_nn = c(test_err_nn, test_err_nn_i)
-}
+# tuning a neural network
+fitControl <- trainControl(method = "cv", number = 10, classProbs = TRUE)
 
-mod_nn = nnet(highchol~., data = train_data, size=5, decay=5e-4, maxit=100)
+nnetGrid <-  expand.grid(size = seq(1, 8, by = 1),
+                         decay = c(0.5, 0.1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7))
+
+nnetFit <- train(highchol~ BMXWAIST + BPXDI2 + DR1TCAFF + BPXDI3 + BMXBMI +
+                   BMXLEG + SIAPROXY + BPXPLS + WTDRD1 + DR1TM201, 
+                 data = train_data_a,
+                 method = "nnet",
+                 metric = "ROC",
+                 trControl = fitControl,
+                 tuneGrid = nnetGrid,
+                 verbose = FALSE)
+nnetFit
+
+# running the optimal neural network from the previous tuning method
+mod_nn = nnet(highchol~ BMXWAIST + BPXDI2 + DR1TCAFF + BPXDI3 + BMXBMI +
+                BMXLEG + SIAPROXY + BPXPLS + WTDRD1 + DR1TM201, 
+              data = train_data, size=7, decay=0.5, maxit=200)
 mod_nn
+
+# predictions and test errors using the optimal neural network algorithm
 nn_pred = predict(mod_nn, test_data)
 nn_pred = ifelse(nn_pred > .5, "Yes", "No")
+test_err_nn = mean(test_data_a$highchol != nn_pred)
+test_err_nn
+
 table(nn_pred, test_data$highchol)
+
 
